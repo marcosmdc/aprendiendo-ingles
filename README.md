@@ -1,4 +1,6 @@
-# Aplicacion para practicar ingles
+# Speak Up
+
+Aplicacion para practicar ingles
 
 Aplicacion web sencilla hecha con Next.js para aprender y practicar la pronunciacion de verbos irregulares en ingles. Los datos fueron cargados desde el archivo `plan_verbos_irregulares.xlsx`, especificamente desde la hoja `Verbos`.
 
@@ -22,6 +24,8 @@ La aplicacion permite estudiar verbos irregulares en grupos semanales, escuchar 
 - Permite practicar con microfono si el navegador soporta `SpeechRecognition` o `webkitSpeechRecognition`.
 - Guarda en el navegador los verbos marcados como dominados usando `localStorage`.
 - Muestra el significado en espanol de cada verbo y, con el boton "Ver en español", la traduccion de cada oracion (conjugada segun sujeto y tiempo, con "vos").
+- Modo "Completar oraciones": muestra una oracion de la guia (sujeto, tiempo y tipo al azar) con el verbo oculto para escribirlo, con puntaje y audio al corregir.
+- Seccion de frases habituales para el restaurante, el cine y la oficina, con traduccion, audio y un dialogo de ejemplo.
 - Tiene modo oscuro: sigue al sistema o se elige a mano (automatico / oscuro / claro).
 - Incluye una guia de formatos de oracion para el verbo activo: afirmar, negar, preguntar, responder y preguntar con Wh-, en presente, pasado, presente perfecto, futuro, presente continuo y con modales, eligiendo el sujeto (I, you, he, she, we, they).
 - No requiere login, usuarios ni base de datos.
@@ -112,6 +116,8 @@ app/
   page.tsx       Pantalla principal y logica de practica
   grammar.ts     Generador de oraciones por tiempo verbal y sujeto
   spanish.ts     Traduccion y conjugacion en espanol de las oraciones
+  cloze.ts       Arma los ejercicios de completar oraciones
+  phrases.ts     Frases habituales por lugar (restaurante, cine, oficina)
   tts.ts         Audio: mp3 de Piper, Piper en el navegador y voz del navegador
   theme-toggle.tsx  Selector de tema claro / oscuro
 package.json     Scripts y dependencias del proyecto

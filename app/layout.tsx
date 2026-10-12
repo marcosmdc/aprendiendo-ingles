@@ -4,10 +4,10 @@ import RegisterServiceWorker from "./register-sw";
 import { themeScript } from "./theme-toggle";
 
 export const metadata: Metadata = {
-  title: "Verbos irregulares",
-  description: "Practica verbos irregulares en ingles con escucha, repeticion y mini quiz.",
-  applicationName: "Verbos irregulares",
-  appleWebApp: { capable: true, title: "Verbos", statusBarStyle: "default" },
+  title: "Speak Up",
+  description: "Practica ingles: verbos irregulares, oraciones para completar y frases para la vida real.",
+  applicationName: "Speak Up",
+  appleWebApp: { capable: true, title: "Speak Up", statusBarStyle: "default" },
   icons: {
     icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
     apple: "/icons/apple-touch-icon.png"

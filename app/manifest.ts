@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Verbos irregulares",
-    short_name: "Verbos",
-    description: "Practica verbos irregulares en ingles con escucha, repeticion y mini quiz.",
+    name: "Speak Up",
+    short_name: "Speak Up",
+    description: "Practica ingles: verbos irregulares, oraciones para completar y frases para la vida real.",
     lang: "es",
     start_url: "/",
     scope: "/",

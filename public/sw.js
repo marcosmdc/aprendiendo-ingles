@@ -1,5 +1,5 @@
 // Service worker: la app funciona sin conexion despues de la primera visita.
-const CACHE = "verbos-v2";
+const CACHE = "speakup-v1";
 const AUDIO_INDEX = "/audio/verbs/index.json";
 const PRECACHE = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
 

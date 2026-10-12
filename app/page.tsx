@@ -4,10 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { verbs } from "./data";
 import { meaning } from "./spanish";
 import { buildTenses, rowLabels, subjects, type Subject } from "./grammar";
+import ClozePractice from "./cloze-practice";
+import Phrasebook from "./phrasebook";
 import ThemeToggle from "./theme-toggle";
 import { playVerb, preloadPiper, resumePiper, speakText, subscribeVoice, type VoiceStatus } from "./tts";
 
-type Mode = "cards" | "quiz";
+type Mode = "cards" | "quiz" | "complete";
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
 
 declare global {
@@ -151,10 +153,10 @@ export default function Home() {
       <section className="hero">
         <div>
           <p className="eyebrow">Ingles practico</p>
-          <h1>Verbos irregulares</h1>
+          <h1>Speak Up</h1>
           <p className="intro">
-            {verbs.length} verbos por semana y patron: escuchalos, repetilos y aprende a usarlos para
-            afirmar, negar, preguntar y responder en cada tiempo.
+            {verbs.length} verbos irregulares por semana y patron: escuchalos, repetilos, completa oraciones
+            y aprende frases para el restaurante, el cine y la oficina.
           </p>
         </div>
         <div className="heroSide">
@@ -196,6 +198,7 @@ export default function Home() {
       <section className="modeSwitch" aria-label="Modo de practica">
         <button className={mode === "cards" ? "active" : ""} onClick={() => setMode("cards")}>Tarjetas</button>
         <button className={mode === "quiz" ? "active" : ""} onClick={() => setMode("quiz")}>Mini quiz</button>
+        <button className={mode === "complete" ? "active" : ""} onClick={() => setMode("complete")}>Completar oraciones</button>
       </section>
 
       <section className="practice">
@@ -207,10 +210,13 @@ export default function Home() {
           <h2>{active.base}</h2>
           <p className="forms">{active.base} / {active.past} / {active.participle}</p>
           <p className="meaning">En español: <strong>{meaning(active.base)}</strong></p>
-          <div className="phrase">
-            <p>{phrase}</p>
-            {showEs && phraseRow.es && <p className="es">{phraseRow.es}</p>}
-          </div>
+          {/* En "Completar" la frase de ejemplo se oculta para no dar la respuesta. */}
+          {mode !== "complete" && (
+            <div className="phrase">
+              <p>{phrase}</p>
+              {showEs && phraseRow.es && <p className="es">{phraseRow.es}</p>}
+            </div>
+          )}
           <button className="esToggle" onClick={toggleEs} aria-pressed={showEs}>
             {showEs ? "Ocultar español" : "Ver en español"}
           </button>
@@ -218,8 +224,12 @@ export default function Home() {
           <div className="actions">
             <button onClick={() => playVerb(active)}>Escuchar verbo</button>
             <button onClick={() => playVerb(active, true)}>Verbo lento</button>
-            <button onClick={() => speakText(phrase)}>Escuchar frase</button>
-            <button onClick={() => speakText(phrase, true)}>Frase lenta</button>
+            {mode !== "complete" && (
+              <>
+                <button onClick={() => speakText(phrase)}>Escuchar frase</button>
+                <button onClick={() => speakText(phrase, true)}>Frase lenta</button>
+              </>
+            )}
           </div>
 
           <p className="voiceStatus">
@@ -234,7 +244,9 @@ export default function Home() {
             )}
           </p>
 
-          {mode === "cards" ? (
+          {mode === "complete" ? (
+            <ClozePractice verb={active} showEs={showEs} onNextVerb={nextCard} />
+          ) : mode === "cards" ? (
             <div className="repeatBox">
               <button className="secondary" onClick={listenToUser}>{listening ? "Escuchando..." : "Practicar con microfono"}</button>
               <p>{heard || "Repeti el verbo o la frase y compara lo que entendio el navegador."}</p>
@@ -328,6 +340,8 @@ export default function Home() {
 
         <p className="tip"><strong>Ojo:</strong> {tense.tip}</p>
       </section>
+
+      <Phrasebook />
     </main>
   );
 }
