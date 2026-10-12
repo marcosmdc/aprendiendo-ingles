@@ -173,8 +173,8 @@ function WordRow({ word, miss }: { word: string; miss: number }) {
         <span className="statNote">falló {miss} {miss === 1 ? "vez" : "veces"}</span>
       </div>
       <div className="rowActions">
-        <button className="secondary" onClick={() => speakText(word)}>Escuchar</button>
-        <button className="secondary" onClick={() => speakText(word, true)}>Lento</button>
+        <button className="ico ico-play secondary" onClick={() => speakText(word)}>Escuchar</button>
+        <button className="ico ico-slow secondary" onClick={() => speakText(word, true)}>Lento</button>
         {speak.button}
       </div>
       {speak.feedback && <div className="phraseFeedback">{speak.feedback}</div>}

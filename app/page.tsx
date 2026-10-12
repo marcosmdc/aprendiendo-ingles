@@ -9,6 +9,7 @@ import Guide from "./guide";
 import { ipa, ipaLabel } from "./ipa";
 import Phrasebook from "./phrasebook";
 import ProgressScreen from "./progress-screen";
+import RulesScreen from "./rules-screen";
 import { dueItems, recordAnswer, useProgress } from "./progress";
 import { useSpeakCheck } from "./speak-check";
 import ThemeToggle from "./theme-toggle";
@@ -16,12 +17,13 @@ import VerbTable from "./verb-table";
 import { playVerb, preloadPiper, resumePiper, speakText, subscribeVoice, type VoiceStatus } from "./tts";
 
 type Mode = "cards" | "quiz" | "complete" | "list";
-type Screen = "verbos" | "oraciones" | "frases" | "progreso";
+type Screen = "verbos" | "oraciones" | "frases" | "reglas" | "progreso";
 
 const screens: { id: Screen; label: string }[] = [
   { id: "verbos", label: "Verbos" },
   { id: "oraciones", label: "Oraciones" },
   { id: "frases", label: "Frases" },
+  { id: "reglas", label: "Reglas" },
   { id: "progreso", label: "Progreso" }
 ];
 
@@ -158,7 +160,7 @@ export default function Home() {
             {screens.map((item) => (
               <button
                 key={item.id}
-                className={item.id === screen ? "active" : ""}
+                className={`nav-${item.id} ${item.id === screen ? "active" : ""}`}
                 aria-current={item.id === screen ? "page" : undefined}
                 onClick={() => goTo(item.id)}
               >
@@ -257,12 +259,12 @@ export default function Home() {
                   </div>
 
                   <div className="actions">
-                    <button onClick={() => playVerb(active)}>Escuchar verbo</button>
-                    <button onClick={() => playVerb(active, true)}>Verbo lento</button>
+                    <button className="ico ico-play" onClick={() => playVerb(active)}>Escuchar verbo</button>
+                    <button className="ico ico-slow secondary" onClick={() => playVerb(active, true)}>Verbo lento</button>
                     {mode !== "complete" && (
                       <>
-                        <button onClick={() => speakText(phrase)}>Escuchar frase</button>
-                        <button onClick={() => speakText(phrase, true)}>Frase lenta</button>
+                        <button className="ico ico-play secondary" onClick={() => speakText(phrase)}>Escuchar frase</button>
+                        <button className="ico ico-slow secondary" onClick={() => speakText(phrase, true)}>Frase lenta</button>
                       </>
                     )}
                   </div>
@@ -335,6 +337,8 @@ export default function Home() {
         )}
 
         {screen === "frases" && <Phrasebook />}
+
+        {screen === "reglas" && <RulesScreen />}
 
         {screen === "progreso" && <ProgressScreen showEs={showEs} />}
       </main>

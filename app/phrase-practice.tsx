@@ -148,8 +148,8 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
             <p className="es">{question.phrase.es}</p>
             <p className="instructions">Escuchala, después tocá Decir y repetila en voz alta. Con {SPEAK_PASS}% o más, cuenta como correcta.</p>
             <div className="actions">
-              <button className="secondary" onClick={() => speakText(question.phrase.en)}>Escuchar</button>
-              <button className="secondary" onClick={() => speakText(question.phrase.en, true)}>Lento</button>
+              <button className="ico ico-play secondary" onClick={() => speakText(question.phrase.en)}>Escuchar</button>
+              <button className="ico ico-slow secondary" onClick={() => speakText(question.phrase.en, true)}>Lento</button>
               {speak.button}
             </div>
             {speak.feedback}
@@ -158,8 +158,8 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
           <>
             <p className="instructions">Escucha la frase y elegi que significa.</p>
             <div className="actions">
-              <button onClick={() => speakText(question.phrase.en)}>Escuchar</button>
-              <button className="secondary" onClick={() => speakText(question.phrase.en, true)}>Lento</button>
+              <button className="ico ico-play" onClick={() => speakText(question.phrase.en)}>Escuchar</button>
+              <button className="ico ico-slow secondary" onClick={() => speakText(question.phrase.en, true)}>Lento</button>
             </div>
             <div className="options">
               {question.options.map((option) => (
@@ -195,11 +195,11 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
             <>
               <button onClick={checkBuild} disabled={picked.length !== question.tiles.length}>Comprobar</button>
               <button className="secondary" onClick={() => setPicked([])} disabled={!picked.length}>Borrar</button>
-              <button className="secondary" onClick={() => speakText(question.phrase.en)}>Pista: escuchar</button>
+              <button className="ico ico-play secondary" onClick={() => speakText(question.phrase.en)}>Pista: escuchar</button>
             </>
           ) : null}
           {result && question.kind !== "speak" && (
-            <button className="secondary" onClick={() => speakText(question.phrase.en)}>Escuchar de nuevo</button>
+            <button className="ico ico-play secondary" onClick={() => speakText(question.phrase.en)}>Escuchar de nuevo</button>
           )}
         </div>
       </div>

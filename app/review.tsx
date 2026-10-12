@@ -85,8 +85,8 @@ function PhraseCard({ phrase, onDone }: { phrase: Phrase; onDone: () => void }) 
         <>
           <p className="answerReveal">{phrase.en}</p>
           <div className="actions">
-            <button className="secondary" onClick={() => speakText(phrase.en)}>Escuchar</button>
-            <button className="secondary" onClick={() => speakText(phrase.en, true)}>Lento</button>
+            <button className="ico ico-play secondary" onClick={() => speakText(phrase.en)}>Escuchar</button>
+            <button className="ico ico-slow secondary" onClick={() => speakText(phrase.en, true)}>Lento</button>
             {speak.button}
           </div>
           {speak.feedback}

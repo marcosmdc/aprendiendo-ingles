@@ -83,8 +83,8 @@ function GuideRow({ row, showEs }: { row: Row; showEs: boolean }) {
       <p>{row.example}</p>
       {showEs && row.es && <p className="es">{row.es}</p>}
       <div className="rowActions">
-        <button className="secondary" onClick={() => speakText(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
-        <button className="secondary" onClick={() => speakText(row.example, true)} aria-label={`Escuchar lento: ${row.example}`}>Lento</button>
+        <button className="ico ico-play secondary" onClick={() => speakText(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
+        <button className="ico ico-slow secondary" onClick={() => speakText(row.example, true)} aria-label={`Escuchar lento: ${row.example}`}>Lento</button>
         {speak.button}
       </div>
       {speak.feedback && <div className="rowFeedback">{speak.feedback}</div>}

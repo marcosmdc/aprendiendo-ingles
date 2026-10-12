@@ -46,7 +46,7 @@ export function useSpeakCheck(target: string, { onResult, countAnswer = true }: 
 
   const listening = state.status === "listening";
   const button = (
-    <button className={`secondary speakButton ${listening ? "listening" : ""}`} onClick={start} disabled={listening} aria-label={`Decir en voz alta: ${target}`}>
+    <button className={`ico ico-mic secondary speakButton ${listening ? "listening" : ""}`} onClick={start} disabled={listening} aria-label={`Decir en voz alta: ${target}`}>
       {listening ? "Escuchando..." : "Decir"}
     </button>
   );

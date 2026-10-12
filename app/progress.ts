@@ -91,6 +91,12 @@ export function recordSpeech(words: { text: string; ok: boolean }[], passed: boo
   save({ ...progress, words: stats, days: countsAsAnswer ? countAnswer(progress, passed) : progress.days });
 }
 
+/** Respuesta de un ejercicio sin repaso (por ejemplo, las reglas): solo suma a la meta del dia. */
+export function recordPractice(ok: boolean) {
+  const progress = load();
+  save({ ...progress, days: countAnswer(progress, ok) });
+}
+
 export function setGoal(goal: number) {
   save({ ...load(), goal });
 }

@@ -82,7 +82,7 @@ export default function ClozePractice({ verb, showEs, onNextVerb, review = false
         ) : (
           <button onClick={check} disabled={!value.trim()}>Comprobar</button>
         )}
-        <button className="secondary" onClick={() => speakText(exercise.example)} disabled={!result}>Escuchar</button>
+        <button className="ico ico-play secondary" onClick={() => speakText(exercise.example)} disabled={!result}>Escuchar</button>
         {!review && <button className="secondary" onClick={onNextVerb}>Otro verbo</button>}
       </div>
     </div>

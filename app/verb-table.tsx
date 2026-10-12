@@ -66,7 +66,7 @@ export default function VerbTable({ verbs, onOpen }: { verbs: Verb[]; onOpen: (b
                   ))}
                   <td className="meaningCell">{meaning(verb.base)}</td>
                   <td>
-                    <button className="secondary" onClick={() => playVerb(verb)} aria-label={`Escuchar ${verb.base}`}>Escuchar</button>
+                    <button className="ico ico-play secondary" onClick={() => playVerb(verb)} aria-label={`Escuchar ${verb.base}`}>Escuchar</button>
                   </td>
                 </tr>
               );

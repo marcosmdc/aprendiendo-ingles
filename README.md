@@ -31,6 +31,7 @@ La aplicacion permite estudiar verbos irregulares en grupos semanales, escuchar 
 - Navegacion en cuatro pantallas (Verbos, Oraciones, Frases, Progreso): arriba en la compu y como barra fija abajo en el celular. La pantalla va en la URL (`#frases`), asi funciona el boton "atras".
 - Progreso guardado en el navegador (`localStorage`, clave `speakup-progress`): repaso espaciado tipo Leitner (lo que fallas vuelve hoy, lo que aciertas vuelve en 1, 2, 4, 8 y 16 dias), meta diaria, racha, aciertos, grafico de los ultimos 7 dias y "tus palabras dificiles" (las que mas salen en rojo al usar Decir).
 - Lista completa de los 102 verbos en tabla, con la pronunciacion de cada forma en simbolos foneticos (IPA, ingles americano) y una guia para leer los simbolos que mas cuestan.
+- Pantalla de reglas: preguntas con W (palabras, como se arma la pregunta, errores comunes y ejercicio) y que cambia con cada pronombre (am/is/are, was/were, do/does, has/have, -s, objeto, posesivos y reflexivos, con ejercicio).
 - Tiene modo oscuro: sigue al sistema o se elige a mano (automatico / oscuro / claro).
 - Incluye una guia de formatos de oracion para el verbo activo: afirmar, negar, preguntar, responder y preguntar con Wh-, en presente, pasado, presente perfecto, futuro, presente continuo y con modales, eligiendo el sujeto (I, you, he, she, we, they).
 - No requiere login, usuarios ni base de datos.
@@ -131,6 +132,8 @@ app/
   progress-screen.tsx  Pantalla de progreso y repaso
   ipa.ts         Pronunciacion IPA de cada verbo
   verb-table.tsx Lista completa de verbos
+  rules.ts       Contenido de reglas: preguntas con W y pronombres
+  rules-screen.tsx  Pantalla de reglas con ejercicios
   guide.tsx      Guia de oraciones por tiempo verbal
   speak-check.tsx   Boton "Decir" y resultado de pronunciacion
   tts.ts         Audio: mp3 de Piper, Piper en el navegador y voz del navegador

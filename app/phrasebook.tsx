@@ -16,8 +16,8 @@ function PhraseRow({ phrase, hideEs }: { phrase: Phrase; hideEs: boolean }) {
         {!hideEs && <p className="es">{phrase.es}</p>}
       </div>
       <div className="rowActions">
-        <button className="secondary" onClick={() => speakText(phrase.en)} aria-label={`Escuchar: ${phrase.en}`}>Escuchar</button>
-        <button className="secondary" onClick={() => speakText(phrase.en, true)} aria-label={`Escuchar lento: ${phrase.en}`}>Lento</button>
+        <button className="ico ico-play secondary" onClick={() => speakText(phrase.en)} aria-label={`Escuchar: ${phrase.en}`}>Escuchar</button>
+        <button className="ico ico-slow secondary" onClick={() => speakText(phrase.en, true)} aria-label={`Escuchar lento: ${phrase.en}`}>Lento</button>
         {speak.button}
       </div>
       {speak.feedback && <div className="phraseFeedback">{speak.feedback}</div>}
