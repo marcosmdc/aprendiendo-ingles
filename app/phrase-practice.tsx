@@ -2,13 +2,18 @@
 
 import { useEffect, useState } from "react";
 import type { Phrase } from "./phrases";
+import { useSpeakCheck } from "./speak-check";
 import { speakText } from "./tts";
 
-type Kind = "build" | "listen";
+type Kind = "build" | "listen" | "speak";
 type Tile = { id: number; word: string };
 type Question =
   | { kind: "build"; phrase: Phrase; tiles: Tile[] }
-  | { kind: "listen"; phrase: Phrase; options: string[] };
+  | { kind: "listen"; phrase: Phrase; options: string[] }
+  | { kind: "speak"; phrase: Phrase };
+
+// En "Decir la frase" cuenta como correcta si el primer intento llega a este puntaje.
+const SPEAK_PASS = 80;
 
 const randomItem = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)];
 
@@ -37,6 +42,8 @@ function makeQuestion(kind: Kind, phrases: Phrase[], previous?: Phrase): Questio
     return { kind, phrase, tiles: shuffled };
   }
 
+  if (kind === "speak") return { kind, phrase };
+
   const wrong = shuffle(Array.from(new Set(phrases.map((item) => item.es))).filter((es) => es !== phrase.es)).slice(0, 3);
   return { kind, phrase, options: shuffle([phrase.es, ...wrong]) };
 }
@@ -48,6 +55,10 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
   const [choice, setChoice] = useState<string | null>(null);
   const [result, setResult] = useState<"ok" | "error" | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
+  // Solo el primer intento suma al puntaje; despues se puede seguir practicando.
+  const speak = useSpeakCheck(question.phrase.en, (value) => {
+    if (question.kind === "speak" && !result) grade(value >= SPEAK_PASS);
+  });
 
   function next(nextKind = kind) {
     const nextQuestion = makeQuestion(nextKind, phrases, question.phrase);
@@ -98,6 +109,7 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
         <div className="chips" aria-label="Tipo de ejercicio">
           <button className={kind === "build" ? "active" : ""} onClick={() => changeKind("build")}>Armar la frase</button>
           <button className={kind === "listen" ? "active" : ""} onClick={() => changeKind("listen")}>Escuchar y elegir</button>
+          <button className={kind === "speak" ? "active" : ""} onClick={() => changeKind("speak")}>Decir la frase</button>
         </div>
         <span className="score">{score.ok} / {score.total} correctas</span>
       </div>
@@ -126,6 +138,18 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
               ))}
             </div>
           </>
+        ) : question.kind === "speak" ? (
+          <>
+            <p className="prompt">{question.phrase.en}</p>
+            <p className="es">{question.phrase.es}</p>
+            <p className="instructions">Escuchala, después tocá Decir y repetila en voz alta. Con {SPEAK_PASS}% o más, cuenta como correcta.</p>
+            <div className="actions">
+              <button className="secondary" onClick={() => speakText(question.phrase.en)}>Escuchar</button>
+              <button className="secondary" onClick={() => speakText(question.phrase.en, true)}>Lento</button>
+              {speak.button}
+            </div>
+            {speak.feedback}
+          </>
         ) : (
           <>
             <p className="instructions">Escucha la frase y elegi que significa.</p>
@@ -148,7 +172,7 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
           </>
         )}
 
-        {result && (
+        {result && question.kind !== "speak" && (
           <div className="feedback">
             <p className={result}>{result === "ok" ? "¡Correcto!" : "No era esa."}</p>
             <p className="answerText">
@@ -161,6 +185,8 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
         <div className="actions">
           {result ? (
             <button onClick={() => next()}>Siguiente</button>
+          ) : question.kind === "speak" ? (
+            <button className="secondary" onClick={() => next()}>Saltar</button>
           ) : question.kind === "build" ? (
             <>
               <button onClick={checkBuild} disabled={picked.length !== question.tiles.length}>Comprobar</button>
@@ -168,7 +194,7 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
               <button className="secondary" onClick={() => speakText(question.phrase.en)}>Pista: escuchar</button>
             </>
           ) : null}
-          {result && (
+          {result && question.kind !== "speak" && (
             <button className="secondary" onClick={() => speakText(question.phrase.en)}>Escuchar de nuevo</button>
           )}
         </div>

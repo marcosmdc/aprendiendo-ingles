@@ -156,3 +156,9 @@ export function resumePiper() {
     if (window.localStorage.getItem(STORED_KEY)) preloadPiper();
   } catch {}
 }
+
+/** Corta cualquier audio (y los pedidos pendientes), por ejemplo antes de usar el microfono. */
+export function stopAudio() {
+  lastRequest++;
+  stop();
+}

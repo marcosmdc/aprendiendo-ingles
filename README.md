@@ -26,6 +26,7 @@ La aplicacion permite estudiar verbos irregulares en grupos semanales, escuchar 
 - Muestra el significado en espanol de cada verbo y, con el boton "Ver en español", la traduccion de cada oracion (conjugada segun sujeto y tiempo, con "vos").
 - Modo "Completar oraciones": muestra una oracion de la guia (sujeto, tiempo y tipo al azar) con el verbo oculto para escribirlo, con puntaje y audio al corregir.
 - Seccion de frases habituales para 17 situaciones (restaurante, aeropuerto, hotel, supermercado, medico, emergencias, charla casual y mas), con traduccion, audio y un dialogo de ejemplo.
+- Practica de pronunciacion con microfono: boton "Decir" en la tarjeta, en cada oracion de la guia y en cada frase habitual, y ejercicio "Decir la frase". Compara lo que entendio el reconocimiento de voz con la frase, palabra por palabra, y marca en rojo las que no se entendieron.
 - Practica de frases habituales: armar la frase en ingles ordenando palabras a partir del espanol, o escuchar la frase y elegir su traduccion. Por lugar o con todos mezclados.
 - Tiene modo oscuro: sigue al sistema o se elige a mano (automatico / oscuro / claro).
 - Incluye una guia de formatos de oracion para el verbo activo: afirmar, negar, preguntar, responder y preguntar con Wh-, en presente, pasado, presente perfecto, futuro, presente continuo y con modales, eligiendo el sujeto (I, you, he, she, we, they).
@@ -97,6 +98,8 @@ Notas:
 - Puede no estar disponible en todos los navegadores.
 - Si no esta disponible, la app sigue funcionando con escucha, tarjetas y quiz escrito.
 
+La comparacion (`app/pronunciation.ts`) ignora mayusculas y puntuacion, acepta contracciones (`I'm` = `I am`) y numeros escritos con cifras (`2` = `two`, `$24` = `twenty-four dollars`), y entre las transcripciones posibles elige la que mejor coincide.
+
 ## Persistencia local
 
 Los verbos marcados como dominados se guardan en `localStorage` con la clave `known-verbs`.
@@ -119,6 +122,9 @@ app/
   spanish.ts     Traduccion y conjugacion en espanol de las oraciones
   cloze.ts       Arma los ejercicios de completar oraciones
   phrases.ts     Frases habituales por lugar (restaurante, aeropuerto, medico, etc.)
+  speech.ts      Reconocimiento de voz del navegador
+  pronunciation.ts  Comparacion palabra por palabra de lo dicho con la frase
+  speak-check.tsx   Boton "Decir" y resultado de pronunciacion
   tts.ts         Audio: mp3 de Piper, Piper en el navegador y voz del navegador
   theme-toggle.tsx  Selector de tema claro / oscuro
 package.json     Scripts y dependencias del proyecto

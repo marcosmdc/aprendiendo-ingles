@@ -3,9 +3,11 @@
 import { useState } from "react";
 import PhrasePractice from "./phrase-practice";
 import { places, type Phrase } from "./phrases";
+import { useSpeakCheck } from "./speak-check";
 import { speakText } from "./tts";
 
 function PhraseRow({ phrase, hideEs }: { phrase: Phrase; hideEs: boolean }) {
+  const speak = useSpeakCheck(phrase.en);
   return (
     <li className="phraseItem">
       <div>
@@ -16,7 +18,9 @@ function PhraseRow({ phrase, hideEs }: { phrase: Phrase; hideEs: boolean }) {
       <div className="rowActions">
         <button className="secondary" onClick={() => speakText(phrase.en)} aria-label={`Escuchar: ${phrase.en}`}>Escuchar</button>
         <button className="secondary" onClick={() => speakText(phrase.en, true)} aria-label={`Escuchar lento: ${phrase.en}`}>Lento</button>
+        {speak.button}
       </div>
+      {speak.feedback && <div className="phraseFeedback">{speak.feedback}</div>}
     </li>
   );
 }

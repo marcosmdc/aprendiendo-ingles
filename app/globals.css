@@ -552,6 +552,81 @@ button.option.wrong { border-color: var(--danger); color: var(--danger); opacity
 
 .phrasePractice .actions { margin-top: 1rem; }
 
+/* Practica de pronunciacion con microfono */
+button.speakButton {
+  background: var(--tint);
+  border: 1px solid var(--accent);
+  color: var(--accent-dark);
+}
+
+button.speakButton:hover { background: var(--soft); }
+
+button.speakButton.listening {
+  animation: listening 1s ease-in-out infinite;
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--on-accent);
+  opacity: 1;
+}
+
+@keyframes listening {
+  50% { box-shadow: 0 0 0 0.45rem color-mix(in srgb, var(--danger) 25%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.speakButton.listening { animation: none; }
+}
+
+.speakFeedback {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  margin-top: 0.6rem;
+  padding: 0.7rem 0.9rem;
+}
+
+p.speakFeedback.error { color: var(--danger); font-weight: 700; }
+
+.speakFeedback p { margin: 0; }
+.speakFeedback p + p { margin-top: 0.3rem; }
+
+.speakWords {
+  font-size: 1.05rem;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+.wordOk { color: var(--accent-dark); }
+
+.wordMiss {
+  color: var(--danger);
+  text-decoration: underline wavy;
+  text-underline-offset: 0.2em;
+}
+
+.heard {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.rowFeedback { grid-column: 2 / -1; }
+.rowFeedback .speakFeedback { margin-top: 0.2rem; }
+
+.phraseFeedback { flex-basis: 100%; }
+.phraseFeedback .speakFeedback { margin-top: 0; }
+
+.speakTarget + .speakTarget { margin-top: 0.8rem; }
+
+.speakTargetHead {
+  align-items: center;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: space-between;
+}
+
+.repeatBox .instructions { margin-top: 0; }
+
 /* Con muchos lugares, en el celular las pestanas se deslizan de costado. */
 @media (max-width: 560px) {
   .phrasebook .tabs {
@@ -732,6 +807,7 @@ button.link:hover { background: none; color: var(--ink); }
   .row { grid-template-columns: minmax(0, 1fr) auto; }
   .rowLabel { grid-row: auto; }
   .row code, .row p, .row p.es { grid-column: 1; }
+  .rowFeedback { grid-column: 1 / -1; }
   .phraseItem { flex-wrap: wrap; }
   .phraseItem .rowActions { flex-direction: row; }
   .rowActions { flex-direction: column; grid-column: 2; grid-row: 1 / span 4; }

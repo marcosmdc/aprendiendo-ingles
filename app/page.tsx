@@ -3,37 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { verbs } from "./data";
 import { meaning } from "./spanish";
-import { buildTenses, rowLabels, subjects, type Subject } from "./grammar";
+import { buildTenses, rowLabels, subjects, type Row, type Subject } from "./grammar";
 import ClozePractice from "./cloze-practice";
 import Phrasebook from "./phrasebook";
+import { useSpeakCheck } from "./speak-check";
 import ThemeToggle from "./theme-toggle";
 import { playVerb, preloadPiper, resumePiper, speakText, subscribeVoice, type VoiceStatus } from "./tts";
 
 type Mode = "cards" | "quiz" | "complete";
-type SpeechRecognitionConstructor = new () => SpeechRecognition;
-
-declare global {
-  interface Window {
-    SpeechRecognition?: SpeechRecognitionConstructor;
-    webkitSpeechRecognition?: SpeechRecognitionConstructor;
-  }
-
-  interface SpeechRecognition extends EventTarget {
-    lang: string;
-    interimResults: boolean;
-    maxAlternatives: number;
-    start: () => void;
-    stop: () => void;
-    onresult: ((event: SpeechRecognitionEvent) => void) | null;
-    onend: (() => void) | null;
-    onerror: (() => void) | null;
-  }
-
-  interface SpeechRecognitionEvent {
-    results: SpeechRecognitionResultList;
-  }
-}
-
 const normalize = (value: string) => value.trim().toLowerCase().replace(/\s+/g, " ");
 
 const acceptsAnswer = (answer: string, expected: string) => {
@@ -52,8 +29,6 @@ export default function Home() {
   const [answerPast, setAnswerPast] = useState("");
   const [answerParticiple, setAnswerParticiple] = useState("");
   const [showResult, setShowResult] = useState(false);
-  const [heard, setHeard] = useState("");
-  const [listening, setListening] = useState(false);
   const [known, setKnown] = useState<string[]>([]);
   const [subject, setSubject] = useState<Subject>("I");
   const [tenseId, setTenseId] = useState("present");
@@ -111,7 +86,6 @@ export default function Home() {
     setShowResult(false);
     setAnswerPast("");
     setAnswerParticiple("");
-    setHeard("");
   }, [filtered.length, pattern, query, week]);
 
   function nextCard() {
@@ -119,7 +93,6 @@ export default function Home() {
     setShowResult(false);
     setAnswerPast("");
     setAnswerParticiple("");
-    setHeard("");
   }
 
   function toggleKnown() {
@@ -128,24 +101,6 @@ export default function Home() {
       : [...known, activeKey];
     setKnown(next);
     window.localStorage.setItem("known-verbs", JSON.stringify(next));
-  }
-
-  function listenToUser() {
-    const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
-    if (!Recognition) {
-      setHeard("Tu navegador no soporta reconocimiento de voz. Probalo en Chrome.");
-      return;
-    }
-
-    const recognition = new Recognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-    recognition.onresult = (event) => setHeard(event.results[0][0].transcript);
-    recognition.onerror = () => setListening(false);
-    recognition.onend = () => setListening(false);
-    setListening(true);
-    recognition.start();
   }
 
   return (
@@ -248,8 +203,9 @@ export default function Home() {
             <ClozePractice verb={active} showEs={showEs} onNextVerb={nextCard} />
           ) : mode === "cards" ? (
             <div className="repeatBox">
-              <button className="secondary" onClick={listenToUser}>{listening ? "Escuchando..." : "Practicar con microfono"}</button>
-              <p>{heard || "Repeti el verbo o la frase y compara lo que entendio el navegador."}</p>
+              <p className="instructions">Escuchá y repetí en voz alta: te marco en rojo las palabras que no se entendieron.</p>
+              <SpeakTarget label="Verbo" text={`${active.base}, ${active.past.replace("/", ", ")}, ${active.participle.replace("/", ", ")}`} />
+              <SpeakTarget label="Frase" text={phrase} />
             </div>
           ) : (
             <div className="quiz">
@@ -324,16 +280,7 @@ export default function Home() {
         ) : (
           <div className="rows">
             {tense.rows.map((row) => (
-              <div key={row.kind} className={`row ${row.kind}`}>
-                <span className="rowLabel">{rowLabels[row.kind]}</span>
-                <code>{row.formula}</code>
-                <p>{row.example}</p>
-                {showEs && row.es && <p className="es">{row.es}</p>}
-                <div className="rowActions">
-                  <button className="secondary" onClick={() => speakText(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
-                  <button className="secondary" onClick={() => speakText(row.example, true)} aria-label={`Escuchar lento: ${row.example}`}>Lento</button>
-                </div>
-              </div>
+              <GuideRow key={row.kind} row={row} showEs={showEs} />
             ))}
           </div>
         )}
@@ -343,5 +290,36 @@ export default function Home() {
 
       <Phrasebook />
     </main>
+  );
+}
+
+function GuideRow({ row, showEs }: { row: Row; showEs: boolean }) {
+  const speak = useSpeakCheck(row.example);
+  return (
+    <div className={`row ${row.kind}`}>
+      <span className="rowLabel">{rowLabels[row.kind]}</span>
+      <code>{row.formula}</code>
+      <p>{row.example}</p>
+      {showEs && row.es && <p className="es">{row.es}</p>}
+      <div className="rowActions">
+        <button className="secondary" onClick={() => speakText(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
+        <button className="secondary" onClick={() => speakText(row.example, true)} aria-label={`Escuchar lento: ${row.example}`}>Lento</button>
+        {speak.button}
+      </div>
+      {speak.feedback && <div className="rowFeedback">{speak.feedback}</div>}
+    </div>
+  );
+}
+
+function SpeakTarget({ label, text }: { label: string; text: string }) {
+  const speak = useSpeakCheck(text);
+  return (
+    <div className="speakTarget">
+      <div className="speakTargetHead">
+        <span className="who">{label}</span>
+        {speak.button}
+      </div>
+      {speak.feedback}
+    </div>
   );
 }
