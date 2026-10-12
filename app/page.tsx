@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { verbs, type Verb } from "./data";
 import { buildTenses, rowLabels, subjects, type Subject } from "./grammar";
+import { playVerb, preloadPiper, resumePiper, speakText, subscribeVoice, type VoiceStatus } from "./tts";
 
 type Mode = "cards" | "quiz";
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
@@ -58,6 +59,12 @@ export default function Home() {
   const [known, setKnown] = useState<string[]>([]);
   const [subject, setSubject] = useState<Subject>("I");
   const [tenseId, setTenseId] = useState("present");
+  const [voice, setVoice] = useState<VoiceStatus>({ state: "idle" });
+
+  useEffect(() => {
+    resumePiper();
+    return subscribeVoice(setVoice);
+  }, []);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("known-verbs");
@@ -90,16 +97,6 @@ export default function Home() {
     setAnswerParticiple("");
     setHeard("");
   }, [filtered.length, pattern, query, week]);
-
-  function speak(text: string, slow = false) {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = slow ? 0.72 : 0.9;
-    utterance.pitch = 1;
-    window.speechSynthesis.speak(utterance);
-  }
 
   function nextCard() {
     setActiveIndex((current) => (current + 1) % filtered.length);
@@ -195,10 +192,23 @@ export default function Home() {
           <p className="phrase">{phrase}</p>
 
           <div className="actions">
-            <button onClick={() => speak(`${active.base}. ${active.past}. ${active.participle}.`)}>Escuchar verbo</button>
-            <button onClick={() => speak(phrase)}>Escuchar frase</button>
-            <button onClick={() => speak(`${active.base}. ${active.past}. ${active.participle}.`, true)}>Lento</button>
+            <button onClick={() => playVerb(active)}>Escuchar verbo</button>
+            <button onClick={() => playVerb(active, true)}>Verbo lento</button>
+            <button onClick={() => speakText(phrase)}>Escuchar frase</button>
+            <button onClick={() => speakText(phrase, true)}>Frase lenta</button>
           </div>
+
+          <p className="voiceStatus">
+            {voice.state === "ready" && "Voz HD (Piper) lista para frases."}
+            {voice.state === "loading" && `Descargando voz HD... ${voice.progress}% (solo la primera vez). Mientras tanto se usa la voz del navegador.`}
+            {voice.state === "error" && "No se pudo cargar la voz HD: las frases usan la voz del navegador."}
+            {voice.state === "idle" && (
+              <>
+                Las frases usan la voz del navegador.{" "}
+                <button className="link" onClick={preloadPiper}>Descargar voz HD (63 MB, una sola vez)</button>
+              </>
+            )}
+          </p>
 
           {mode === "cards" ? (
             <div className="repeatBox">
@@ -276,7 +286,10 @@ export default function Home() {
                 <span className="rowLabel">{rowLabels[row.kind]}</span>
                 <code>{row.formula}</code>
                 <p>{row.example}</p>
-                <button className="secondary" onClick={() => speak(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
+                <div className="rowActions">
+                  <button className="secondary" onClick={() => speakText(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
+                  <button className="secondary" onClick={() => speakText(row.example, true)} aria-label={`Escuchar lento: ${row.example}`}>Lento</button>
+                </div>
               </div>
             ))}
           </div>

@@ -57,15 +57,28 @@ Para verbos con respuestas alternativas separadas por `/`, como `burnt/burned`, 
 
 ## Pronunciacion
 
-La pronunciacion se implementa con `speechSynthesis`, una API nativa del navegador. No se usa una libreria externa ni servicios pagos.
+La pronunciacion usa Piper (ver "Voz HD con Piper"). Si no esta disponible, se usa `speechSynthesis` del navegador en `en-US`.
 
-Configuracion usada:
+## Voz HD con Piper
 
-- Idioma: `en-US`.
-- Velocidad normal: `0.9`.
-- Velocidad lenta: `0.72`.
+- **Verbos:** los audios de cada verbo (normal y lento) estan pregrabados con [Piper](https://github.com/OHF-Voice/piper1-gpl) en `public/audio/verbs`, con la voz `en_US-lessac-medium`.
+- **Frases:** se generan en el navegador con `@mintplex-labs/piper-tts-web`. La voz (unos 63 MB) se descarga una sola vez y queda guardada en el navegador. Mientras se descarga, o si falla, se usa la voz del navegador (`speechSynthesis`), eligiendo la mas natural disponible.
+- `onnxruntime-web` esta fijado en `1.18.0` porque la libreria carga los `.wasm` de esa version desde el CDN.
 
-La calidad de la voz depende del navegador y del sistema operativo.
+Para regenerar los audios de los verbos (por ejemplo si cambia `app/data.ts`), hace falta Python y ffmpeg:
+
+```bash
+python -m venv .piper/venv
+.piper/venv/Scripts/python -m pip install piper-tts
+.piper/venv/Scripts/python -m piper.download_voices --data-dir .piper/voices en_US-lessac-medium
+.piper/venv/Scripts/python scripts/generate_audio.py
+```
+
+## PWA
+
+La app se puede instalar en el celular o la PC ("Agregar a pantalla de inicio" / "Instalar app"). El service worker (`public/sw.js`) guarda la app y los 204 audios de verbos para usarla sin conexion. Si la voz HD ya se descargo, las frases tambien funcionan offline.
+
+Si se cambia `public/sw.js`, subir la version de `CACHE` para que los navegadores tomen la nueva.
 
 ## Reconocimiento de voz
 
