@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ingles: verbos y pronunciacion",
+  title: "Verbos irregulares",
   description: "Practica verbos irregulares en ingles con escucha, repeticion y mini quiz."
 };
 

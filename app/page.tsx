@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { verbs, type Verb } from "./data";
+import { buildTenses, rowLabels, subjects, type Subject } from "./grammar";
 
 type Mode = "cards" | "quiz";
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
@@ -55,6 +56,8 @@ export default function Home() {
   const [heard, setHeard] = useState("");
   const [listening, setListening] = useState(false);
   const [known, setKnown] = useState<string[]>([]);
+  const [subject, setSubject] = useState<Subject>("I");
+  const [tenseId, setTenseId] = useState("present");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("known-verbs");
@@ -77,6 +80,8 @@ export default function Home() {
   const phrase = examples[activeIndex % examples.length](active);
   const pastOk = acceptsAnswer(answerPast, active.past);
   const participleOk = acceptsAnswer(answerParticiple, active.participle);
+  const tenses = buildTenses(active, subject);
+  const tense = tenses.find((item) => item.id === tenseId) ?? tenses[0];
 
   useEffect(() => {
     setActiveIndex(0);
@@ -134,11 +139,11 @@ export default function Home() {
     <main className="shell">
       <section className="hero">
         <div>
-          <p className="eyebrow">Plan desde Excel</p>
-          <h1>Practica verbos irregulares en ingles escuchando, repitiendo y escribiendo.</h1>
+          <p className="eyebrow">Ingles practico</p>
+          <h1>Verbos irregulares</h1>
           <p className="intro">
-            {verbs.length} verbos organizados por semanas y patrones. Ideal para estudiar un grupo chico,
-            escuchar pronunciacion americana y comprobar pasado simple y participio.
+            {verbs.length} verbos por semana y patron: escuchalos, repetilos y aprende a usarlos para
+            afirmar, negar, preguntar y responder en cada tiempo.
           </p>
         </div>
         <div className="stats" aria-label="Resumen">
@@ -237,6 +242,47 @@ export default function Home() {
             </button>
           ))}
         </aside>
+      </section>
+
+      <section className="guide" aria-label="Como usar el verbo en oraciones">
+        <div className="guideHead">
+          <div>
+            <p className="eyebrow">Formatos de oracion</p>
+            <h3>Como usar <span>{active.base}</span></h3>
+          </div>
+          <div className="chips" aria-label="Sujeto">
+            {subjects.map((item) => (
+              <button key={item} className={item === subject ? "active" : ""} onClick={() => setSubject(item)}>{item}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="tabs" role="tablist" aria-label="Tiempo verbal">
+          {tenses.map((item) => (
+            <button key={item.id} role="tab" aria-selected={item.id === tense.id} className={item.id === tense.id ? "active" : ""} onClick={() => setTenseId(item.id)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        <p className="use"><strong>Cuando se usa:</strong> {tense.use}</p>
+
+        {tense.note ? (
+          <p className="note">{tense.note}</p>
+        ) : (
+          <div className="rows">
+            {tense.rows.map((row) => (
+              <div key={row.kind} className={`row ${row.kind}`}>
+                <span className="rowLabel">{rowLabels[row.kind]}</span>
+                <code>{row.formula}</code>
+                <p>{row.example}</p>
+                <button className="secondary" onClick={() => speak(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p className="tip"><strong>Ojo:</strong> {tense.tip}</p>
       </section>
     </main>
   );

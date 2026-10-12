@@ -21,6 +21,7 @@ La aplicacion permite estudiar verbos irregulares en grupos semanales, escuchar 
 - Incluye una opcion de pronunciacion lenta para escuchar con mas claridad.
 - Permite practicar con microfono si el navegador soporta `SpeechRecognition` o `webkitSpeechRecognition`.
 - Guarda en el navegador los verbos marcados como dominados usando `localStorage`.
+- Incluye una guia de formatos de oracion para el verbo activo: afirmar, negar, preguntar, responder y preguntar con Wh-, en presente, pasado, presente perfecto, futuro, presente continuo y con modales, eligiendo el sujeto (I, you, he, she, we, they).
 - No requiere login, usuarios ni base de datos.
 - Esta preparada para subirse a GitHub y desplegarse en Vercel.
 
@@ -94,6 +95,7 @@ app/
   globals.css    Estilos globales de la interfaz
   layout.tsx     Layout principal y metadata
   page.tsx       Pantalla principal y logica de practica
+  grammar.ts     Generador de oraciones por tiempo verbal y sujeto
 package.json     Scripts y dependencias del proyecto
 next.config.mjs  Configuracion de Next.js
 ```
