@@ -156,7 +156,7 @@ export default function Home() {
           <h1>Speak Up</h1>
           <p className="intro">
             {verbs.length} verbos irregulares por semana y patron: escuchalos, repetilos, completa oraciones
-            y aprende frases para el restaurante, el cine y la oficina.
+            y aprende frases para el restaurante, el cine, la oficina, el aeropuerto y el hotel.
           </p>
         </div>
         <div className="heroSide">
