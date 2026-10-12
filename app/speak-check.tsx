@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { comparePronunciation, type Comparison } from "./pronunciation";
+import { recordSpeech } from "./progress";
 import { recognize, SpeechError } from "./speech";
 import { stopAudio } from "./tts";
 
@@ -15,7 +16,15 @@ type State =
  * Practica de pronunciacion: escucha al usuario y compara con `target`.
  * Devuelve el boton y el bloque de resultado por separado, para ubicarlos donde convenga.
  */
-export function useSpeakCheck(target: string, onResult?: (score: number) => void) {
+export const SPEAK_PASS = 80;
+
+type Options = {
+  onResult?: (score: number) => void;
+  // false cuando el ejercicio ya suma su propia respuesta (para no contarla dos veces).
+  countAnswer?: boolean;
+};
+
+export function useSpeakCheck(target: string, { onResult, countAnswer = true }: Options = {}) {
   const [state, setState] = useState<State>({ status: "idle" });
 
   // Si cambia la frase (otro sujeto, otro verbo), se borra el resultado anterior.
@@ -27,6 +36,7 @@ export function useSpeakCheck(target: string, onResult?: (score: number) => void
     try {
       const result = comparePronunciation(target, await recognize());
       setState({ status: "done", result });
+      recordSpeech(result.words, result.score >= SPEAK_PASS, countAnswer);
       onResult?.(result.score);
     } catch (error) {
       const message = error instanceof SpeechError ? error.message : "No se pudo usar el micrófono.";

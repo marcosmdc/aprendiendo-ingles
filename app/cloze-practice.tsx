@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { Verb } from "./data";
 import { checkAnswer, makeExercise, type Exercise } from "./cloze";
+import { recordAnswer } from "./progress";
 import { speakText } from "./tts";
 
-type Props = { verb: Verb; showEs: boolean; onNextVerb: () => void };
+// En modo repaso hay un solo ejercicio por verbo: "Siguiente" pasa al proximo repaso.
+type Props = { verb: Verb; showEs: boolean; onNextVerb: () => void; review?: boolean };
 
-export default function ClozePractice({ verb, showEs, onNextVerb }: Props) {
+export default function ClozePractice({ verb, showEs, onNextVerb, review = false }: Props) {
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<"ok" | "error" | null>(null);
@@ -31,6 +33,7 @@ export default function ClozePractice({ verb, showEs, onNextVerb }: Props) {
     const ok = checkAnswer(exercise, value);
     setResult(ok ? "ok" : "error");
     setScore((current) => ({ ok: current.ok + (ok ? 1 : 0), total: current.total + 1 }));
+    recordAnswer(`verb:${verb.base}`, ok);
     speakText(exercise.example);
   }
 
@@ -49,8 +52,9 @@ export default function ClozePractice({ verb, showEs, onNextVerb }: Props) {
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (event.key !== "Enter") return;
-            if (result) newExercise();
-            else check();
+            if (!result) check();
+            else if (review) onNextVerb();
+            else newExercise();
           }}
           readOnly={result !== null}
           className={result ?? ""}
@@ -74,12 +78,12 @@ export default function ClozePractice({ verb, showEs, onNextVerb }: Props) {
 
       <div className="actions">
         {result ? (
-          <button onClick={newExercise}>Otra oración</button>
+          <button onClick={review ? onNextVerb : newExercise}>{review ? "Siguiente" : "Otra oración"}</button>
         ) : (
           <button onClick={check} disabled={!value.trim()}>Comprobar</button>
         )}
         <button className="secondary" onClick={() => speakText(exercise.example)} disabled={!result}>Escuchar</button>
-        <button className="secondary" onClick={onNextVerb}>Otro verbo</button>
+        {!review && <button className="secondary" onClick={onNextVerb}>Otro verbo</button>}
       </div>
     </div>
   );

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { Phrase } from "./phrases";
-import { useSpeakCheck } from "./speak-check";
+import { recordAnswer } from "./progress";
+import { SPEAK_PASS, useSpeakCheck } from "./speak-check";
 import { speakText } from "./tts";
 
 type Kind = "build" | "listen" | "speak";
@@ -12,8 +13,6 @@ type Question =
   | { kind: "listen"; phrase: Phrase; options: string[] }
   | { kind: "speak"; phrase: Phrase };
 
-// En "Decir la frase" cuenta como correcta si el primer intento llega a este puntaje.
-const SPEAK_PASS = 80;
 
 const randomItem = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)];
 
@@ -56,8 +55,12 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
   const [result, setResult] = useState<"ok" | "error" | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
   // Solo el primer intento suma al puntaje; despues se puede seguir practicando.
-  const speak = useSpeakCheck(question.phrase.en, (value) => {
-    if (question.kind === "speak" && !result) grade(value >= SPEAK_PASS);
+  // En "Decir la frase" cuenta como correcta si el primer intento llega a SPEAK_PASS.
+  const speak = useSpeakCheck(question.phrase.en, {
+    onResult: (value) => {
+      if (question.kind === "speak" && !result) grade(value >= SPEAK_PASS);
+    },
+    countAnswer: question.kind !== "speak"
   });
 
   function next(nextKind = kind) {
@@ -75,6 +78,7 @@ export default function PhrasePractice({ phrases }: { phrases: Phrase[] }) {
   }
 
   function grade(ok: boolean) {
+    recordAnswer(`phrase:${question.phrase.en}`, ok);
     setResult(ok ? "ok" : "error");
     setScore((current) => ({ ok: current.ok + (ok ? 1 : 0), total: current.total + 1 }));
   }

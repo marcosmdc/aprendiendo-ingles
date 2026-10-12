@@ -156,12 +156,6 @@ h1 {
   padding: 1.2rem;
 }
 
-.heroSide {
-  display: grid;
-  gap: 0.6rem;
-  justify-items: end;
-}
-
 .themeToggle {
   background: transparent;
   border: 1px solid var(--line);
@@ -627,6 +621,383 @@ p.speakFeedback.error { color: var(--danger); font-weight: 700; }
 
 .repeatBox .instructions { margin-top: 0; }
 
+/* Encabezado con navegacion: arriba en la compu, barra fija abajo en el celular */
+.appHeader {
+  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.appHeaderInner {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 0.6rem 2rem;
+}
+
+.brand {
+  color: var(--accent-dark);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.appNav {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.appNav button {
+  align-items: center;
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  gap: 0.4rem;
+  padding: 0.55rem 0.95rem;
+}
+
+.appNav button:hover { background: var(--soft); }
+
+.appNav button.active {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+}
+
+.badge {
+  background: var(--danger);
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.72rem;
+  line-height: 1;
+  min-width: 1.25rem;
+  padding: 0.2rem 0.35rem;
+  text-align: center;
+}
+
+.cardLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.verbPicker {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.verbPicker select { padding: 0.5rem 0.7rem; }
+
+/* Progreso */
+.statGrid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  margin-top: 1rem;
+}
+
+.statTile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem;
+}
+
+.statLabel {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.statTile strong {
+  font-size: 2.2rem;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.statTile strong small {
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.statNote {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.goalBar {
+  background: var(--soft);
+  border-radius: 999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.goalBar span {
+  background: var(--accent);
+  border-radius: 999px;
+  display: block;
+  height: 100%;
+}
+
+.reviewBox {
+  align-items: center;
+  background: var(--tint);
+  border-radius: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 1.2rem 0;
+  padding: 1rem 1.2rem;
+}
+
+.reviewBox .prompt { margin-top: 0; }
+.reviewBox .instructions { margin-bottom: 0; }
+
+.sectionTitle {
+  color: var(--accent-dark);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  margin: 1.2rem 0 0.6rem;
+  text-transform: uppercase;
+}
+
+.weekChart {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(7, 1fr);
+  max-width: 560px;
+}
+
+.weekDay {
+  align-items: center;
+  display: grid;
+  gap: 0.3rem;
+  justify-items: center;
+}
+
+.weekValue {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  left: 0;
+  margin-bottom: 0.15rem;
+  position: absolute;
+  right: 0;
+  text-align: center;
+}
+
+.weekTrack {
+  border-bottom: 1px solid var(--line);
+  height: 110px;
+  margin-top: 1.2rem;
+  position: relative;
+  width: 100%;
+}
+
+.weekBar {
+  background: var(--accent);
+  border-radius: 4px 4px 0 0;
+  bottom: 0;
+  left: 25%;
+  min-height: 0;
+  position: absolute;
+  width: 50%;
+}
+
+.weekDay:hover .weekBar { background: var(--accent-hover); }
+
+.weekGoal {
+  border-top: 2px dashed var(--muted);
+  left: 0;
+  opacity: 0.5;
+  position: absolute;
+  right: 0;
+}
+
+.weekLabel {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.wordList {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.settingsRow {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+}
+
+.settingsRow:first-of-type { border-top: 0; }
+
+button.danger { background: var(--danger); color: #ffffff; }
+
+.review { margin-top: 1rem; }
+.review .clozeTop { align-items: center; margin-bottom: 0.5rem; }
+
+.answerReveal {
+  color: var(--accent-dark);
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-weight: 800;
+  margin: 0.6rem 0;
+}
+
+@media (max-width: 860px) {
+  /* backdrop-filter haria que la barra "fixed" se pegue al encabezado y no a la pantalla. */
+  .appHeader { backdrop-filter: none; background: var(--bg); }
+  .appHeaderInner { padding: 0.5rem 1rem; }
+
+  .appNav {
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    bottom: 0;
+    box-shadow: 0 -8px 30px var(--shadow);
+    display: grid;
+    gap: 0.2rem;
+    grid-template-columns: repeat(4, 1fr);
+    left: 0;
+    padding: 0.4rem 0.5rem calc(0.4rem + env(safe-area-inset-bottom));
+    position: fixed;
+    right: 0;
+  }
+
+  .appNav button {
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    justify-content: center;
+    padding: 0.7rem 0.3rem;
+  }
+
+  .shell { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+}
+
+/* Pronunciacion (IPA) y lista completa de verbos */
+.ipa {
+  color: var(--muted);
+  display: block;
+  font-family: "Segoe UI", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.cardIpa {
+  font-size: 1.05rem;
+  margin: 0.3rem 0 0;
+  white-space: pre-wrap;
+}
+
+.tableWrap {
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  margin-top: 1rem;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.verbTable table {
+  border-collapse: collapse;
+  min-width: 640px;
+  width: 100%;
+}
+
+.verbTable th {
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  padding: 0.7rem 0.9rem;
+  position: sticky;
+  text-align: left;
+  text-transform: uppercase;
+  top: 0;
+  z-index: 1;
+}
+
+.verbTable td {
+  border-top: 1px solid var(--line);
+  padding: 0.6rem 0.9rem;
+  vertical-align: top;
+}
+
+.verbTable tbody tr:hover { background: var(--tint); }
+
+.verbTable td button.secondary { padding: 0.45rem 0.8rem; }
+
+.verbLink {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.meaningCell {
+  color: var(--accent-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.ipaKey {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.ipaKey ul {
+  display: grid;
+  gap: 0.5rem 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ipaKey li {
+  align-items: baseline;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 2.2rem 4.5rem 1fr;
+}
+
+.ipaSymbol {
+  color: var(--accent-dark);
+  font-family: "Segoe UI", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.srOnly {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
 /* Con muchos lugares, en el celular las pestanas se deslizan de costado. */
 @media (max-width: 560px) {
   .phrasebook .tabs {
@@ -817,7 +1188,5 @@ button.link:hover { background: none; color: var(--ink); }
   .shell { padding: 1rem; }
   .hero, .toolbar, .practice { grid-template-columns: 1fr; }
   .stats { width: 100%; }
-  .heroSide { justify-items: stretch; }
-  .themeToggle { justify-self: end; }
   .list { max-height: 380px; }
 }
