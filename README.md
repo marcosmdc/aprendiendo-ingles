@@ -21,6 +21,8 @@ La aplicacion permite estudiar verbos irregulares en grupos semanales, escuchar 
 - Incluye una opcion de pronunciacion lenta para escuchar con mas claridad.
 - Permite practicar con microfono si el navegador soporta `SpeechRecognition` o `webkitSpeechRecognition`.
 - Guarda en el navegador los verbos marcados como dominados usando `localStorage`.
+- Muestra el significado en espanol de cada verbo y, con el boton "Ver en español", la traduccion de cada oracion (conjugada segun sujeto y tiempo, con "vos").
+- Tiene modo oscuro: sigue al sistema o se elige a mano (automatico / oscuro / claro).
 - Incluye una guia de formatos de oracion para el verbo activo: afirmar, negar, preguntar, responder y preguntar con Wh-, en presente, pasado, presente perfecto, futuro, presente continuo y con modales, eligiendo el sujeto (I, you, he, she, we, they).
 - No requiere login, usuarios ni base de datos.
 - Esta preparada para subirse a GitHub y desplegarse en Vercel.
@@ -109,6 +111,9 @@ app/
   layout.tsx     Layout principal y metadata
   page.tsx       Pantalla principal y logica de practica
   grammar.ts     Generador de oraciones por tiempo verbal y sujeto
+  spanish.ts     Traduccion y conjugacion en espanol de las oraciones
+  tts.ts         Audio: mp3 de Piper, Piper en el navegador y voz del navegador
+  theme-toggle.tsx  Selector de tema claro / oscuro
 package.json     Scripts y dependencias del proyecto
 next.config.mjs  Configuracion de Next.js
 ```

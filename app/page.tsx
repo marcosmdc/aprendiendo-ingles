@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { verbs, type Verb } from "./data";
+import { verbs } from "./data";
+import { meaning } from "./spanish";
 import { buildTenses, rowLabels, subjects, type Subject } from "./grammar";
+import ThemeToggle from "./theme-toggle";
 import { playVerb, preloadPiper, resumePiper, speakText, subscribeVoice, type VoiceStatus } from "./tts";
 
 type Mode = "cards" | "quiz";
@@ -30,12 +32,6 @@ declare global {
   }
 }
 
-const examples = [
-  (verb: Verb) => `I ${verb.base} it every week.`,
-  (verb: Verb) => `Yesterday I ${verb.past.split("/")[0]} it.`,
-  (verb: Verb) => `I have ${verb.participle.split("/")[0]} it before.`
-];
-
 const normalize = (value: string) => value.trim().toLowerCase().replace(/\s+/g, " ");
 
 const acceptsAnswer = (answer: string, expected: string) => {
@@ -60,6 +56,22 @@ export default function Home() {
   const [subject, setSubject] = useState<Subject>("I");
   const [tenseId, setTenseId] = useState("present");
   const [voice, setVoice] = useState<VoiceStatus>({ state: "idle" });
+  const [showEs, setShowEs] = useState(false);
+
+  useEffect(() => {
+    try {
+      setShowEs(window.localStorage.getItem("show-es") === "1");
+    } catch {}
+  }, []);
+
+  function toggleEs() {
+    setShowEs((current) => {
+      try {
+        window.localStorage.setItem("show-es", current ? "0" : "1");
+      } catch {}
+      return !current;
+    });
+  }
 
   useEffect(() => {
     resumePiper();
@@ -84,7 +96,9 @@ export default function Home() {
 
   const active = filtered[activeIndex] ?? filtered[0] ?? verbs[0];
   const activeKey = `${active.base}-${active.week}`;
-  const phrase = examples[activeIndex % examples.length](active);
+  // Frase de la tarjeta: va rotando entre presente, pasado y presente perfecto.
+  const phraseRow = buildTenses(active, "I")[activeIndex % 3].rows[0];
+  const phrase = phraseRow.example;
   const pastOk = acceptsAnswer(answerPast, active.past);
   const participleOk = acceptsAnswer(answerParticiple, active.participle);
   const tenses = buildTenses(active, subject);
@@ -143,11 +157,14 @@ export default function Home() {
             afirmar, negar, preguntar y responder en cada tiempo.
           </p>
         </div>
-        <div className="stats" aria-label="Resumen">
-          <strong>{known.length}</strong>
-          <span>dominados</span>
-          <strong>{filtered.length}</strong>
-          <span>en vista</span>
+        <div className="heroSide">
+          <ThemeToggle />
+          <div className="stats" aria-label="Resumen">
+            <strong>{known.length}</strong>
+            <span>dominados</span>
+            <strong>{filtered.length}</strong>
+            <span>en vista</span>
+          </div>
         </div>
       </section>
 
@@ -189,7 +206,14 @@ export default function Home() {
           </div>
           <h2>{active.base}</h2>
           <p className="forms">{active.base} / {active.past} / {active.participle}</p>
-          <p className="phrase">{phrase}</p>
+          <p className="meaning">En español: <strong>{meaning(active.base)}</strong></p>
+          <div className="phrase">
+            <p>{phrase}</p>
+            {showEs && phraseRow.es && <p className="es">{phraseRow.es}</p>}
+          </div>
+          <button className="esToggle" onClick={toggleEs} aria-pressed={showEs}>
+            {showEs ? "Ocultar español" : "Ver en español"}
+          </button>
 
           <div className="actions">
             <button onClick={() => playVerb(active)}>Escuchar verbo</button>
@@ -218,7 +242,7 @@ export default function Home() {
           ) : (
             <div className="quiz">
               <label>
-                Past simple de <span>{active.base}</span>
+                Past simple de <span>{active.base}</span> ({meaning(active.base)})
                 <input value={answerPast} onChange={(event) => setAnswerPast(event.target.value)} />
               </label>
               <label>
@@ -249,6 +273,7 @@ export default function Home() {
             <button key={`${verb.week}-${verb.base}`} className={index === activeIndex ? "selected" : ""} onClick={() => setActiveIndex(index)}>
               <strong>{verb.base}</strong>
               <span>{verb.past} / {verb.participle}</span>
+              <small>{meaning(verb.base)}</small>
             </button>
           ))}
         </aside>
@@ -260,10 +285,15 @@ export default function Home() {
             <p className="eyebrow">Formatos de oracion</p>
             <h3>Como usar <span>{active.base}</span></h3>
           </div>
-          <div className="chips" aria-label="Sujeto">
-            {subjects.map((item) => (
-              <button key={item} className={item === subject ? "active" : ""} onClick={() => setSubject(item)}>{item}</button>
-            ))}
+          <div className="guideTools">
+            <button className="esToggle" onClick={toggleEs} aria-pressed={showEs}>
+              {showEs ? "Ocultar español" : "Ver en español"}
+            </button>
+            <div className="chips" aria-label="Sujeto">
+              {subjects.map((item) => (
+                <button key={item} className={item === subject ? "active" : ""} onClick={() => setSubject(item)}>{item}</button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -286,6 +316,7 @@ export default function Home() {
                 <span className="rowLabel">{rowLabels[row.kind]}</span>
                 <code>{row.formula}</code>
                 <p>{row.example}</p>
+                {showEs && row.es && <p className="es">{row.es}</p>}
                 <div className="rowActions">
                   <button className="secondary" onClick={() => speakText(row.example)} aria-label={`Escuchar: ${row.example}`}>Escuchar</button>
                   <button className="secondary" onClick={() => speakText(row.example, true)} aria-label={`Escuchar lento: ${row.example}`}>Lento</button>

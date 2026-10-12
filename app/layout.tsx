@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import RegisterServiceWorker from "./register-sw";
+import { themeScript } from "./theme-toggle";
 
 export const metadata: Metadata = {
   title: "Verbos irregulares",
@@ -14,12 +15,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1f7a5c"
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#1f7a5c" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1512" }
+  ]
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         {children}
         <RegisterServiceWorker />

@@ -1,4 +1,5 @@
 import type { Verb } from "./data";
+import { translate, type EsTense } from "./spanish";
 
 export type Subject = "I" | "you" | "he" | "she" | "we" | "they";
 
@@ -14,7 +15,7 @@ export const rowLabels: Record<RowKind, string> = {
   wh: "Preguntar con Wh-"
 };
 
-export type Row = { kind: RowKind; formula: string; example: string };
+export type Row = { kind: RowKind; formula: string; example: string; es?: string };
 
 export type Tense = {
   id: string;
@@ -37,12 +38,12 @@ const complements: Record<string, string> = {
   speak: "English", steal: "the money", freeze: "the meat", wake: "up early", bite: "the sandwich",
   drive: "a car", eat: "an apple", write: "a letter", be: "at home", go: "to the park",
   have: "breakfast", do: "the homework", see: "the mountains", come: "home", get: "a new phone",
-  make: "dinner", take: "the bus", give: "a gift", blow: "the candles", draw: "a picture",
+  make: "dinner", take: "a taxi", give: "a gift", blow: "the candles", draw: "a picture",
   fly: "to Miami", grow: "tomatoes", know: "the answer", throw: "the ball", show: "the photos",
   find: "the keys", hold: "the baby", lead: "the team", lose: "the game", pay: "the bill",
   say: "hello", sell: "the car", tell: "the truth", win: "the race", stand: "in line",
   burn: "the toast", dream: "about the beach", learn: "English", smell: "the flowers",
-  spell: "the word", spill: "the coffee", spoil: "the surprise", become: "a teacher",
+  spell: "the word", spill: "the coffee", spoil: "the surprise", become: "famous",
   bet: "ten dollars", bleed: "a lot", build: "a house", can: "swim", fall: "asleep",
   forget: "the password", forgive: "the mistake", hang: "the picture on the wall", hear: "the music",
   hide: "the gift", lay: "the cards on the table", light: "a fire", mean: "it", read: "a book",
@@ -280,9 +281,28 @@ function modal(verb: Verb, s: Subject, c: string): Tense {
   };
 }
 
+// Como se traduce cada tiempo (mismas palabras de tiempo que el ejemplo en ingles).
+function spanishFor(tenseId: string, base: string): [EsTense, Parameters<typeof translate>[3]] {
+  const can = base === "can";
+  switch (tenseId) {
+    case "present":
+      return ["present", { marker: can || base === "be" ? undefined : "todos los días", wh: can ? "Dónde" : "Por qué" }];
+    case "past":
+      return can ? ["couldPast", { marker: "de chic{o}", wh: "Dónde" }] : ["past", { marker: "ayer", wh: "Cuándo" }];
+    case "perfect":
+      return ["perfect", { affPre: "ya", negPre: "todavía no", qPre: "alguna vez", wh: "Por qué" }];
+    case "future":
+      return ["future", { marker: "mañana", wh: "Cuándo" }];
+    case "continuous":
+      return ["continuous", { marker: "ahora mismo", wh: "Por qué" }];
+    default:
+      return ["modal", { wh: "Por qué" }];
+  }
+}
+
 export function buildTenses(verb: Verb, subject: Subject): Tense[] {
   const c = complements[verb.base] ?? "it";
-  return [
+  const tenses = [
     presentSimple(verb, subject, c),
     pastSimple(verb, subject, c),
     presentPerfect(verb, subject, c),
@@ -290,4 +310,10 @@ export function buildTenses(verb: Verb, subject: Subject): Tense[] {
     presentContinuous(verb, subject, c),
     modal(verb, subject, c)
   ];
+  return tenses.map((tense) => {
+    const [esTense, options] = spanishFor(tense.id, verb.base);
+    const spanish = translate(verb.base, subject, esTense, options);
+    if (!spanish) return tense;
+    return { ...tense, rows: tense.rows.map((row) => ({ ...row, es: spanish[row.kind] })) };
+  });
 }
