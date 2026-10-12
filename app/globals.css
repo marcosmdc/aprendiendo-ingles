@@ -456,6 +456,19 @@ button:disabled {
 
 .dialogue { margin-top: 1.4rem; }
 
+/* Con muchos lugares, en el celular las pestanas se deslizan de costado. */
+@media (max-width: 560px) {
+  .phrasebook .tabs {
+    flex-wrap: nowrap;
+    margin-left: -0.2rem;
+    overflow-x: auto;
+    padding: 0 0.2rem 0.4rem;
+    scrollbar-width: thin;
+  }
+
+  .phrasebook .tabs button { flex-shrink: 0; }
+}
+
 .ok { color: var(--accent-dark); font-weight: 850; }
 .error { color: var(--danger); font-weight: 850; }
 
