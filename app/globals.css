@@ -456,6 +456,102 @@ button:disabled {
 
 .dialogue { margin-top: 1.4rem; }
 
+.phrasePractice { margin-top: 1rem; }
+
+.practiceBar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: space-between;
+}
+
+.score {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.prompt {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-weight: 750;
+  margin: 0.4rem 0 0.2rem;
+}
+
+.instructions {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.2rem 0 0.8rem;
+}
+
+.answerLine {
+  align-items: center;
+  border: 2px dashed var(--line);
+  border-radius: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 3.4rem;
+  padding: 0.5rem;
+}
+
+.answerLine.ok { border-color: var(--accent); border-style: solid; }
+.answerLine.error { border-color: var(--danger); border-style: solid; }
+
+.placeholder { color: var(--muted); padding: 0 0.4rem; }
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.8rem 0;
+  min-height: 2.6rem;
+}
+
+button.tile {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  color: var(--ink);
+  font-weight: 700;
+  padding: 0.5rem 0.8rem;
+}
+
+button.tile:hover { background: var(--soft-hover); }
+button.tile:disabled { cursor: default; opacity: 1; }
+
+.options {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+button.option {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  color: var(--ink);
+  font-weight: 650;
+  padding: 0.8rem 1rem;
+  text-align: left;
+}
+
+button.option:hover { background: var(--soft); }
+button.option:disabled { cursor: default; opacity: 0.6; }
+button.option.correct { background: var(--tint); border-color: var(--accent); color: var(--accent-dark); opacity: 1; }
+button.option.wrong { border-color: var(--danger); color: var(--danger); opacity: 1; }
+
+.feedback { margin-top: 1rem; }
+.feedback p { margin: 0 0 0.3rem; }
+
+.answerText {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.phrasePractice .actions { margin-top: 1rem; }
+
 /* Con muchos lugares, en el celular las pestanas se deslizan de costado. */
 @media (max-width: 560px) {
   .phrasebook .tabs {
